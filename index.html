@@ -24,6 +24,8 @@
       var connect = false;
 
       var peer;
+      var theStream;
+
       if (code) { // receiving end
         console.log('answerer of ' + code);
         code = code + '-receive'
@@ -58,6 +60,7 @@
         document.querySelector('.start').addEventListener('click', function (e) {
           console.log('1 2 3 let\'s go');
           navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
+            theStream = stream;
             var call = peer.call(code + '-receive', stream);
           }).catch(function(err) {
             console.log('Failed to get local stream' ,err);
@@ -70,6 +73,12 @@
           peer.destroy();
           peer = null;
         }
+
+        try {
+          theStream.stop();
+        } catch (e) {
+        }
+
         code = ((Math.random() * big |0)+ big).toString(16);
         history.replaceState(null, null, "?" + code);
 
