@@ -59,7 +59,7 @@
         console.log('caller');
         code = ((Math.random() * big |0)+ big).toString(16);
 
-        document.querySelector('input').value = window.location + '?' + code + '-receive';
+        document.querySelector('input').value = window.location + '?' + code;
 
         peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
 
@@ -89,7 +89,7 @@
 
         code = ((Math.random() * big |0)+ big).toString(16);
 
-        document.querySelector('input').value = window.location + '?' + code + 'receive';
+        document.querySelector('input').value = window.location + '?' + code;
 
         peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
       });
