@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <style>
+      video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <button>go</button>
+    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    <script>
+      var code = location.search.substr(1);
+      var big = Math.pow(16,10);
+      var connect = false;
+
+      if (code) { // receiving end
+        code = code + '-receive'
+        var peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+
+        peer.on('call', function(call) {
+          call.answer(); // Answer the call with an A/V stream.
+          call.on('stream', function(remoteStream) {
+            var video = document.querySelector('video');
+            document.body.appendChild(video);
+            video.src = window.URL.createObjectURL(mediaStream);
+            video.onloadedmetadata = function(e) {
+              video.play();
+            };
+          });
+        });
+
+      } else { // sending end
+        code = ((Math.random() * big |0)+ big).toString(16);
+        history.replaceState(null, null, "?" + code);
+
+        document.querySelector('button').addEventListener('click', function (e) {
+          var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+          getUserMedia({video: true}, function(stream) {
+            var call = peer.call(code + '-receive', stream);
+          }, function(err) {
+            console.log('Failed to get local stream' ,err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
