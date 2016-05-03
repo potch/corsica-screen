@@ -55,11 +55,13 @@
         code = ((Math.random() * big |0)+ big).toString(16);
         history.replaceState(null, null, "?" + code);
 
-        var peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+        peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
 
         document.querySelector('.start').addEventListener('click', function (e) {
           console.log('1 2 3 let\'s go');
-          navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
+          navigator.mediaDevices.getUserMedia(video: {
+            mediaSource: "window"
+          }).then(function(stream) {
             theStream = stream;
             var call = peer.call(code + '-receive', stream);
           }).catch(function(err) {
@@ -68,7 +70,7 @@
         });
       }
 
-      document.querySelector('.reset', 'click', function (e) {
+      document.querySelector('.reset').addEventListener('click', function (e) {
         if (peer) {
           peer.destroy();
           peer = null;
