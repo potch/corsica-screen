@@ -12,11 +12,16 @@
         height: 100%;
         background: #000;
       }
+      input {
+        font-size: 2em;
+        width: 600px;
+      }
     </style>
   </head>
   <body>
     <button class="start">go</button>
     <button class="reset">reset</button>
+    <div><input disabled width=100></div>
     <script src="node_modules/peerjs_fork_firefox40/dist/peer.js"></script>
     <script>
       var code = location.search.substr(1);
@@ -53,7 +58,8 @@
       } else { // sending end
         console.log('caller');
         code = ((Math.random() * big |0)+ big).toString(16);
-        history.replaceState(null, null, "?" + code);
+
+        document.querySelector('input').value = window.location + '?' + code + '-receive';
 
         peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
 
@@ -82,7 +88,8 @@
         }
 
         code = ((Math.random() * big |0)+ big).toString(16);
-        history.replaceState(null, null, "?" + code);
+
+        document.querySelector('input').value = window.location + '?' + code + 'receive';
 
         peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
       });
