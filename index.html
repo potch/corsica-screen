@@ -10,46 +10,71 @@
         left: 0;
         width: 100%;
         height: 100%;
+        background: #000;
       }
     </style>
   </head>
   <body>
-    <button>go</button>
-    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    <button class="start">go</button>
+    <button class="reset">reset</button>
+    <script src="node_modules/peerjs_fork_firefox40/dist/peer.js"></script>
     <script>
       var code = location.search.substr(1);
       var big = Math.pow(16,10);
       var connect = false;
 
+      var peer;
       if (code) { // receiving end
+        console.log('answerer of ' + code);
         code = code + '-receive'
-        var peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+        peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+
+        var video = document.createElement('video');
+        document.body.appendChild(video);
 
         peer.on('call', function(call) {
+          console.log('received call');
           call.answer(); // Answer the call with an A/V stream.
           call.on('stream', function(remoteStream) {
-            var video = document.querySelector('video');
-            document.body.appendChild(video);
-            video.src = window.URL.createObjectURL(mediaStream);
+            console.log('got stream');
+            video.src = window.URL.createObjectURL(remoteStream);
             video.onloadedmetadata = function(e) {
               video.play();
             };
           });
         });
 
+        peer.on('error', function (err) {
+          console.error(err);
+        });
+
       } else { // sending end
+        console.log('caller');
         code = ((Math.random() * big |0)+ big).toString(16);
         history.replaceState(null, null, "?" + code);
 
-        document.querySelector('button').addEventListener('click', function (e) {
-          var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-          getUserMedia({video: true}, function(stream) {
+        var peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+
+        document.querySelector('.start').addEventListener('click', function (e) {
+          console.log('1 2 3 let\'s go');
+          navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
             var call = peer.call(code + '-receive', stream);
-          }, function(err) {
+          }).catch(function(err) {
             console.log('Failed to get local stream' ,err);
           });
         });
       }
+
+      document.querySelector('.reset', 'click', function (e) {
+        if (peer) {
+          peer.destroy();
+          peer = null;
+        }
+        code = ((Math.random() * big |0)+ big).toString(16);
+        history.replaceState(null, null, "?" + code);
+
+        peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+      });
     </script>
   </body>
 </html>
