@@ -34,7 +34,7 @@
       if (code) { // receiving end
         console.log('answerer of ' + code);
         code = code + '-receive'
-        peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+        peer = new Peer(code, {key: 'p6w6fypd9fqolxr', secure: true});
 
         var video = document.createElement('video');
         document.body.appendChild(video);
@@ -61,7 +61,7 @@
 
         document.querySelector('input').value = window.location + '?' + code;
 
-        peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
+        peer = new Peer(code, {key: 'p6w6fypd9fqolxr', secure: true});
 
         document.querySelector('.start').addEventListener('click', function (e) {
           console.log('1 2 3 let\'s go');
