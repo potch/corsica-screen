@@ -79,6 +79,11 @@
         });
       }
 
+      window.onerror = function (m) {
+        document.querySelector('video').remove();
+        document.querySelector('input').value = m;
+      };
+
     </script>
   </body>
 </html>
