@@ -36,6 +36,8 @@
         var video = document.createElement('video');
         document.body.appendChild(video);
 
+        streamCall();
+
         peer.on('stream', function(stream) {
           console.log('got stream');
           video.src = window.URL.createObjectURL(remoteStream);
@@ -48,7 +50,6 @@
           console.error(err);
         });
 
-        streamCall();
 
       } else { // sending end
         console.log('caller');
