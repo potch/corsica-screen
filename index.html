@@ -22,46 +22,38 @@
     <button class="start">go</button>
     <button class="reset">reset</button>
     <div><input></div>
-    <script src="node_modules/peerjs_fork_firefox40/dist/peer.js"></script>
+    <script src="//socketpeer-media.herokuapp.com/socketpeer/socketpeer.js"></script>
     <script>
       var code = location.search.substr(1);
       var big = Math.pow(16,10);
       var connect = false;
-
-      var peer;
+      var pair;
       var theStream;
 
       if (code) { // receiving end
         console.log('answerer of ' + code);
-        code = code + '-receive'
-        peer = new Peer(code, {key: 'p6w6fypd9fqolxr', secure: true});
 
         var video = document.createElement('video');
         document.body.appendChild(video);
 
-        peer.on('call', function(call) {
-          console.log('received call');
-          call.answer(); // Answer the call with an A/V stream.
-          call.on('stream', function(remoteStream) {
-            console.log('got stream');
-            video.src = window.URL.createObjectURL(remoteStream);
-            video.onloadedmetadata = function(e) {
-              video.play();
-            };
-          });
+        peer.on('stream', function(stream) {
+          console.log('got stream');
+          video.src = window.URL.createObjectURL(remoteStream);
+          video.onloadedmetadata = function(e) {
+            video.play();
+          };
         });
 
         peer.on('error', function (err) {
           console.error(err);
         });
 
+        streamCall();
+
       } else { // sending end
         console.log('caller');
-        code = ((Math.random() * big |0)+ big).toString(16);
 
-        document.querySelector('input').value = window.location + '?' + code;
-
-        peer = new Peer(code, {key: 'p6w6fypd9fqolxr', secure: true});
+        code = code || ((Math.random() * big |0)+ big).toString(16);
 
         document.querySelector('.start').addEventListener('click', function (e) {
           console.log('1 2 3 let\'s go');
@@ -69,30 +61,22 @@
             mediaSource: "window"
           }}).then(function(stream) {
             theStream = stream;
-            var call = peer.call(code + '-receive', stream);
+            startCall(stream);
           }).catch(function(err) {
             console.log('Failed to get local stream' ,err);
           });
         });
       }
 
-      document.querySelector('.reset').addEventListener('click', function (e) {
-        if (peer) {
-          peer.destroy();
-          peer = null;
-        }
+      function startCall() {
+        peer = new SocketPeer({
+          socketFallback: false,
+          pairCode: code,
+          stream: stream,
+          url: 'wss://socketpeer-media.herokuapp.com/socketpeer/'
+        });
+      }
 
-        try {
-          theStream.stop();
-        } catch (e) {
-        }
-
-        code = ((Math.random() * big |0)+ big).toString(16);
-
-        document.querySelector('input').value = window.location + '?' + code;
-
-        peer = new Peer(code, {key: 'p6w6fypd9fqolxr'});
-      });
     </script>
   </body>
 </html>
