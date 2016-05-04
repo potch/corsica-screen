@@ -36,7 +36,7 @@
         var video = document.createElement('video');
         document.body.appendChild(video);
 
-        streamCall();
+        startCall();
 
         peer.on('stream', function(stream) {
           console.log('got stream');
