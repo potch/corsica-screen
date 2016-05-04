@@ -40,9 +40,11 @@
 
         peer.on('stream', function(stream) {
           console.log('got stream');
-          video.src = window.URL.createObjectURL(remoteStream);
+          video.src = window.URL.createObjectURL(stream);
           video.onloadedmetadata = function(e) {
-            video.play();
+            setTimeout(function () {
+              video.play();
+            }, 100);
           };
         });
 
