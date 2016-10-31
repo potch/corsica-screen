@@ -20,7 +20,8 @@
   </head>
   <body>
     <select class="screen"></select>
-    <button class="start">start</button>
+    <button class="start-screen">share screen</button>
+    <button class="start-window">share window</button>
     <button class="stop">stop</button>
     <div></div>
     <script async src="//socketpeer-media.herokuapp.com/socketpeer/socketpeer.js"></script>
@@ -116,24 +117,32 @@
 
           console.log(destinationURL);
 
-          document.querySelector('.start').addEventListener('click', function (e) {
-            console.log('1 2 3 let\'s go');
-            sendCommand(destinationURL, currentScreen);
-            document.querySelector('div').innerHTML = destinationURL;
-            navigator.mediaDevices.getUserMedia({video: {
-              mediaSource: "screen"
-            }}).then(function(stream) {
-              theStream = stream;
-              startCall(code, stream);
-            }).catch(function(err) {
-              console.log('Failed to get local stream' ,err);
-            });
+          document.querySelector('.start-screen').addEventListener('click', function (e) {
+            startShare('screen', destinationURL);
+          });
+
+          document.querySelector('.start-window').addEventListener('click', function (e) {
+            startShare('window', destinationURL);
           });
 
           document.querySelector('.stop').addEventListener('click', function (e) {
             sendCommand('reset', currentScreen);
           });
         }
+      }
+
+      function beginShare(type, url) {
+        console.log('1 2 3 let\'s go');
+        sendCommand(destinationURL, currentScreen);
+        document.querySelector('div').innerHTML = url;
+        navigator.mediaDevices.getUserMedia({video: {
+          mediaSource: type
+        }}).then(function(stream) {
+          theStream = stream;
+          startCall(code, stream);
+        }).catch(function(err) {
+          console.log('Failed to get local stream' ,err);
+        });
       }
 
 
