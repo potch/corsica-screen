@@ -28,6 +28,8 @@
 
       var server = 'https://moz-corsica.herokuapp.com/';
 
+      var currentScreen = localStorage.getItem('currentscreen');
+
       function sendCommand(command, screen) {
         command += ' screen=' + (screen || currentScreen);
 
@@ -74,8 +76,6 @@
         var connect = false;
         var pair;
         var theStream;
-
-        currentScreen = localStorage.getItem('currentscreen');
 
         var input = document.querySelector('input');
 
@@ -141,6 +141,11 @@
       }
 
       var select = document.querySelector('.screen');
+
+      select.addEventListener('change', function (e) {
+        currentScreen = select.value;
+        localStorage.setItem('currentscreen', currentScreen);
+      });
 
       function updateSelect(census) {
         var clients = census.clients;
