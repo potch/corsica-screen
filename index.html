@@ -113,16 +113,14 @@
 
           code = code || ((Math.random() * big |0)+ big).toString(16);
 
-          var destinationURL = window.location + '?' + code;
-
           console.log(destinationURL);
 
           document.querySelector('.start-screen').addEventListener('click', function (e) {
-            startSharing('screen', destinationURL);
+            startSharing('screen', code);
           });
 
           document.querySelector('.start-window').addEventListener('click', function (e) {
-            startSharing('window', destinationURL);
+            startSharing('window', code);
           });
 
           document.querySelector('.stop').addEventListener('click', function (e) {
@@ -131,10 +129,11 @@
         }
       }
 
-      function startSharing(type, url) {
+      function startSharing(type, code) {
+        var destinationURL = window.location + '?' + code;
         console.log('1 2 3 let\'s go');
         sendCommand(url, currentScreen);
-        document.querySelector('div').innerHTML = url;
+        document.querySelector('div').innerHTML = destinationURL;
         navigator.mediaDevices.getUserMedia({video: {
           mediaSource: type
         }}).then(function(stream) {
