@@ -118,11 +118,11 @@
           console.log(destinationURL);
 
           document.querySelector('.start-screen').addEventListener('click', function (e) {
-            startShare('screen', destinationURL);
+            startSharing('screen', destinationURL);
           });
 
           document.querySelector('.start-window').addEventListener('click', function (e) {
-            startShare('window', destinationURL);
+            startSharing('window', destinationURL);
           });
 
           document.querySelector('.stop').addEventListener('click', function (e) {
@@ -131,7 +131,7 @@
         }
       }
 
-      function beginShare(type, url) {
+      function startSharing(type, url) {
         console.log('1 2 3 let\'s go');
         sendCommand(destinationURL, currentScreen);
         document.querySelector('div').innerHTML = url;
