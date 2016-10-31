@@ -83,7 +83,7 @@
           var video = document.createElement('video');
           document.body.appendChild(video);
 
-          startCall();
+          startCall(code);
 
           peer.on('stream', function(stream) {
             console.log('got stream');
@@ -119,7 +119,7 @@
             }}).then(function(stream) {
               sendCommand(destinationURL, currentScreen);
               theStream = stream;
-              startCall(stream, code);
+              startCall(code, stream);
             }).catch(function(err) {
               console.log('Failed to get local stream' ,err);
             });
@@ -132,7 +132,7 @@
       }
 
 
-      function startCall(stream, code) {
+      function startCall(code, stream) {
         peer = new SocketPeer({
           socketFallback: false,
           pairCode: code,
