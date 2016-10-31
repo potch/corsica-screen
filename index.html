@@ -147,6 +147,11 @@
         localStorage.setItem('currentscreen', currentScreen);
       });
 
+      select.addEventListener('input', function (e) {
+        currentScreen = select.value;
+        localStorage.setItem('currentscreen', currentScreen);
+      });
+
       function updateSelect(census) {
         var clients = census.clients;
         while (select.childNodes.length) {
