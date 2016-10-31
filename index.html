@@ -19,59 +19,117 @@
     </style>
   </head>
   <body>
-    <button class="start">go</button>
-    <button class="reset">reset</button>
+    <select class="screen"></select>
+    <button class="start">start</button>
+    <button class="stop">stop</button>
     <div><input></div>
     <script src="//socketpeer-media.herokuapp.com/socketpeer/socketpeer.js"></script>
     <script>
-      var code = location.search.substr(1);
-      var big = Math.pow(16,10);
-      var connect = false;
-      var pair;
-      var theStream;
 
-      if (code) { // receiving end
-        console.log('answerer of ' + code);
+      var server = 'http://corsica.mozilla.io/';
 
-        var video = document.createElement('video');
-        document.body.appendChild(video);
+      function sendCommand(command, screen) {
+        command += ' screen=' + (screen || currentScreen);
 
-        startCall();
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', server + 'api/command', true);
 
-        peer.on('stream', function(stream) {
-          console.log('got stream');
-          video.src = window.URL.createObjectURL(stream);
-          video.onloadedmetadata = function(e) {
-            setTimeout(function () {
-              video.play();
-            }, 100);
+        xhr.send(
+          new Blob(
+            [JSON.stringify({
+              raw:command
+            })],
+            {'type': 'application/json'}
+          )
+        );
+      }
+
+      function api(path, body) {
+        return new Promise(function (resolve, reject) {
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', server + 'api/' + path, true);
+      	  xhr.onload = function () {
+            resolve(JSON.parse(xhr.response))
           };
-        });
-
-        peer.on('error', function (err) {
-          console.error(err);
-        });
-
-
-      } else { // sending end
-        console.log('caller');
-
-        code = code || ((Math.random() * big |0)+ big).toString(16);
-
-        document.querySelector('input').value = window.location + '?' + code;
-
-        document.querySelector('.start').addEventListener('click', function (e) {
-          console.log('1 2 3 let\'s go');
-          navigator.mediaDevices.getUserMedia({video: {
-            mediaSource: "screen"
-          }}).then(function(stream) {
-            theStream = stream;
-            startCall(stream);
-          }).catch(function(err) {
-            console.log('Failed to get local stream' ,err);
-          });
+          xhr.onerror = function (...args) {
+            console.log('oh dear, there seems to have been an error');
+            reject(...args);
+          };
+          if (body) {
+            xhr.send(
+              new Blob(
+                [JSON.stringify(body)],
+                {'type': 'application/json'}
+              )
+            );
+          } else {
+            xhr.send();
+          }
         });
       }
+
+      function init() {
+        var code = location.search.substr(1);
+        var big = Math.pow(16,10);
+        var connect = false;
+        var pair;
+        var theStream;
+
+        currentScreen = localStorage.getItem('currentscreen');
+
+        var input = document.querySelector('input');
+
+        if (code) { // receiving end
+          console.log('answerer of ' + code);
+
+          var video = document.createElement('video');
+          document.body.appendChild(video);
+
+          startCall();
+
+          peer.on('stream', function(stream) {
+            console.log('got stream');
+            video.src = window.URL.createObjectURL(stream);
+            video.onloadedmetadata = function(e) {
+              setTimeout(function () {
+                video.play();
+              }, 100);
+            };
+          });
+
+          peer.on('error', function (err) {
+            console.error(err);
+          });
+
+
+        } else { // sending end
+          console.log('caller');
+
+          api('census.clients').then(updateSelect);
+
+          code = code || ((Math.random() * big |0)+ big).toString(16);
+
+          var destinationURL = window.location + '?' + code;
+
+          document.querySelector('.start').addEventListener('click', function (e) {
+            console.log('1 2 3 let\'s go');
+            navigator.mediaDevices.getUserMedia({video: {
+              mediaSource: "screen"
+            }}).then(function(stream) {
+              sendCommand(destinationURL, currentScreen);
+              theStream = stream;
+              startCall(stream);
+            }).catch(function(err) {
+              console.log('Failed to get local stream' ,err);
+            });
+          });
+
+          document.querySelector('.stop').addEventListener('click', function (e) {
+            sendCommand('reset', currentScreen);
+          });
+        }
+      }
+
 
       function startCall(stream) {
         peer = new SocketPeer({
@@ -82,10 +140,37 @@
         });
       }
 
+      var select = document.querySelector('.screen');
+
+      function updateSelect(census) {
+        var clients = census.clients;
+        while (select.childNodes.length) {
+          select.firstChild.remove();
+        }
+        clients.sort();
+        clients.unshift('');
+        clients.forEach(function (c) {
+          var o = document.createElement('option');
+          if (c === currentScreen) {
+            o.setAttribute('selected', true);
+          }
+          o.value = c;
+          o.innerHTML = c;
+          select.appendChild(o);
+        });
+        setTimeout(function () {
+          api('census.clients').then(updateSelect);
+        }, 30 * 1000);
+      }
+
       window.onerror = function (m) {
-        document.querySelector('video').remove();
-        document.querySelector('input').value = m;
+        var video = document.querySelector('video');
+        if (video) {
+          video.remove();
+        }
       };
+
+      window.addEventListener('load', init);
 
     </script>
   </body>
