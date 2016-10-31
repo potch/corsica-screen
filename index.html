@@ -4,6 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        font-size: 4vh;
+        font-family: sans-serif;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      body > * + * {
+        margin-top: 1em;
+      }
+      input, select, button {
+        font: inherit;
+        font-size: 1em;
+        padding: .2em .5em;
+      }
+      button {
+        border-radius: .1em;
+      }
       video {
         position: absolute;
         top: 0;
@@ -13,17 +36,25 @@
         background: #000;
       }
       div {
-        font-size: 2em;
         width: 99%;
+        text-align: center;
+      }
+      button + button {
+        margin-left: 1em;
+      }
+      h2 {
+        margin: 0;
       }
     </style>
   </head>
   <body>
-    <select class="screen"></select>
-    <button class="start-screen">share screen</button>
-    <button class="start-window">share window</button>
+    <h2>Share your screen</h2>
+    <label>screen: <select class="screen"></select></label>
+    <div>
+      <button class="start-screen">share screen</button>
+      <button class="start-window">share window</button>
+    </div>
     <button class="stop">stop</button>
-    <div></div>
     <script async src="//socketpeer-media.herokuapp.com/socketpeer/socketpeer.js"></script>
     <script>
 
@@ -131,7 +162,6 @@
         var destinationURL = window.location + '?' + code;
         console.log('1 2 3 let\'s go');
         sendCommand(destinationURL, currentScreen);
-        document.querySelector('div').innerHTML = destinationURL;
         navigator.mediaDevices.getUserMedia({video: {
           mediaSource: type
         }}).then(function(stream) {
