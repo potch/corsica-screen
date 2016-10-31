@@ -80,6 +80,8 @@
         if (code) { // receiving end
           console.log('answerer of ' + code);
 
+          transmit('timer.stop');
+
           var video = document.createElement('video');
           document.body.appendChild(video);
 
@@ -175,6 +177,16 @@
         setTimeout(function () {
           api('census.clients').then(updateSelect);
         }, 30 * 1000);
+      }
+
+      function transmit(name, args) {
+        if ('parent' in window) {
+          window.parent.postMessage({
+            'corsica': true,
+            'message': name,
+            'args': args
+          }, '*');
+        }
       }
 
       window.onerror = function (m) {
