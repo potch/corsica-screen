@@ -113,10 +113,10 @@
           var destinationURL = window.location + '?' + code;
 
           console.log(destinationURL);
-          sendCommand(destinationURL, currentScreen);
 
           document.querySelector('.start').addEventListener('click', function (e) {
             console.log('1 2 3 let\'s go');
+            sendCommand(destinationURL, currentScreen);
             document.querySelector('div').innerHTML = destinationURL;
             navigator.mediaDevices.getUserMedia({video: {
               mediaSource: "screen"
