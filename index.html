@@ -130,7 +130,7 @@
       function startSharing(type, code) {
         var destinationURL = window.location + '?' + code;
         console.log('1 2 3 let\'s go');
-        sendCommand(url, currentScreen);
+        sendCommand(destinationURL, currentScreen);
         document.querySelector('div').innerHTML = destinationURL;
         navigator.mediaDevices.getUserMedia({video: {
           mediaSource: type
