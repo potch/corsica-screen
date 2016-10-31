@@ -112,6 +112,8 @@
 
           var destinationURL = window.location + '?' + code;
 
+          console.log(destinationURL);
+
           document.querySelector('.start').addEventListener('click', function (e) {
             console.log('1 2 3 let\'s go');
             navigator.mediaDevices.getUserMedia({video: {
