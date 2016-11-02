@@ -86,7 +86,7 @@
 
       var currentScreen;
 
-      var status = document.querySelector('.status');
+      var statusEl = document.querySelector('.status');
 
       function sendCommand(command, screen) {
         command += ' screen=' + (screen || currentScreen);
@@ -141,7 +141,7 @@
 
           transmit('timer.stop');
 
-          status.innerHTML = 'waiting for share&hellip;';
+          statusEl.innerHTML = 'waiting for share&hellip;';
 
           var video = document.createElement('video');
           document.querySelector('.call').appendChild(video);
@@ -150,7 +150,7 @@
 
           peer.on('stream', function(stream) {
             console.log('got stream');
-            status.style.display = 'none';
+            statusEl.style.display = 'none';
             video.src = window.URL.createObjectURL(stream);
             video.onloadedmetadata = function(e) {
               setTimeout(function () {
@@ -260,7 +260,7 @@
         if (video) {
           video.remove();
         }
-        status.innerHTML = m;
+        statusEl.innerHTML = m;
       };
 
       window.addEventListener('load', init);
