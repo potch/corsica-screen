@@ -10,13 +10,27 @@
         font-size: 4vh;
         font-family: sans-serif;
       }
-      body {
+      .connect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
       }
-      body > * + * {
+      .call {
+        display: none;
+      }
+      .mode-call .call {
+        display: block;
+      }
+      .mode-call .connect {
+        display: none;
+      }
+      .connect > * + * {
         margin-top: 1em;
       }
       input, select, button {
@@ -35,8 +49,7 @@
         height: 100%;
         background: #000;
       }
-      div {
-        width: 99%;
+      .row {
         text-align: center;
       }
       button + button {
@@ -45,16 +58,24 @@
       h2 {
         margin: 0;
       }
+      .call {
+        background: #000;
+      }
     </style>
   </head>
   <body>
-    <h2>Share your screen</h2>
-    <label>screen: <select class="screen"></select></label>
-    <div>
-      <button class="start-screen">share screen</button>
-      <button class="start-window">share window</button>
-    </div>
-    <button class="stop">stop</button>
+    <section class="connect">
+      <h2>Share your screen</h2>
+      <label>screen: <select class="screen"></select></label>
+      <div class="row">
+        <button class="start-screen">share screen</button>
+        <button class="start-window">share window</button>
+      </div>
+      <button class="stop">stop</button>
+    </section>
+    <section class="call">
+      <h2 class="status"></h2>
+    </section>
     <script async src="//socketpeer-media.herokuapp.com/socketpeer/socketpeer.js"></script>
     <script>
 
@@ -110,12 +131,13 @@
         var theStream;
 
         if (code) { // receiving end
+          document.body.classList.add('mode-call');
           console.log('answerer of ' + code);
 
           transmit('timer.stop');
 
           var video = document.createElement('video');
-          document.body.appendChild(video);
+          document.querySelector('.call').appendChild(video);
 
           startCall(code);
 
