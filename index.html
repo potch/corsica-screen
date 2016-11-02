@@ -142,13 +142,14 @@
           statusEl.innerHTML = 'waiting for share&hellip;';
 
           var video = document.createElement('video');
-          document.querySelector('.call').appendChild(video);
 
           startCall(code);
 
           peer.on('stream', function(stream) {
             console.log('got stream');
             statusEl.style.display = 'none';
+            statusEl.innerHTML = 'loading&hellip;';
+            document.querySelector('.call').appendChild(video);
             video.src = window.URL.createObjectURL(stream);
             video.onloadedmetadata = function(e) {
               setTimeout(function () {
