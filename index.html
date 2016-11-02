@@ -10,7 +10,7 @@
         font-size: 4vh;
         font-family: sans-serif;
       }
-      .connect {
+      .connect, .call {
         position: absolute;
         top: 0;
         left: 0;
@@ -32,6 +32,9 @@
       }
       .connect > * + * {
         margin-top: 1em;
+      }
+      .call {
+        color: #fff;
       }
       input, select, button {
         font: inherit;
@@ -82,6 +85,8 @@
       var server = 'https://moz-corsica.herokuapp.com/';
 
       var currentScreen;
+
+      var status = document.querySelector('.status');
 
       function sendCommand(command, screen) {
         command += ' screen=' + (screen || currentScreen);
@@ -136,6 +141,8 @@
 
           transmit('timer.stop');
 
+          status.innerHTML = 'waiting for share&hellip;';
+
           var video = document.createElement('video');
           document.querySelector('.call').appendChild(video);
 
@@ -143,6 +150,7 @@
 
           peer.on('stream', function(stream) {
             console.log('got stream');
+            status.style.display = 'none';
             video.src = window.URL.createObjectURL(stream);
             video.onloadedmetadata = function(e) {
               setTimeout(function () {
@@ -252,7 +260,7 @@
         if (video) {
           video.remove();
         }
-        document.querySelector('div').innerHTML = m;
+        document.querySelector('.status').innerHTML = m;
       };
 
       window.addEventListener('load', init);
