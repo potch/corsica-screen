@@ -86,6 +86,14 @@
 
       var statusEl = document.querySelector('.status');
 
+      var peer;
+      var theStream;
+
+      function generateCode() {
+        var big = Math.pow(16,10);
+        return ((Math.random() * (2 << 31) |0)+ 2 << 31).toString(16);
+      }
+
       function sendCommand(command, screen) {
         command += ' screen=' + (screen || currentScreen);
 
@@ -128,10 +136,8 @@
 
       function init() {
         var code = location.search.substr(1);
-        var big = Math.pow(16,10);
         var connect = false;
         var pair;
-        var theStream;
 
         if (code) { // receiving end
           document.body.classList.add('mode-call');
@@ -171,13 +177,13 @@
 
           api('census.clients').then(updateSelect);
 
-          code = code || ((Math.random() * big |0)+ big).toString(16);
-
           document.querySelector('.start-screen').addEventListener('click', function (e) {
+            code = generateCode();
             startSharing('screen', code);
           });
 
           document.querySelector('.start-window').addEventListener('click', function (e) {
+            code = generateCode();
             startSharing('window', code);
           });
 
@@ -185,6 +191,10 @@
             if (theStream) {
               theStream.getTracks()[0].stop();
               theStream = null;
+            }
+            if (peer) {
+              peer.close();
+              peer = null;
             }
             sendCommand('reset', currentScreen);
           });
