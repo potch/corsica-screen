@@ -90,8 +90,8 @@
       var theStream;
 
       function generateCode() {
-        var big = Math.pow(16,10);
-        return ((Math.random() * (2 << 31) |0)+ 2 << 31).toString(16);
+        var big = Math.pow(16, 10);
+        return ((Math.random() * big |0)+ big).toString(16);
       }
 
       function sendCommand(command, screen) {
