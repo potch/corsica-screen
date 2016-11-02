@@ -25,7 +25,7 @@
         display: none;
       }
       .mode-call .call {
-        display: block;
+        display: flex;
       }
       .mode-call .connect {
         display: none;
@@ -260,7 +260,7 @@
         if (video) {
           video.remove();
         }
-        document.querySelector('.status').innerHTML = m;
+        status.innerHTML = m;
       };
 
       window.addEventListener('load', init);
